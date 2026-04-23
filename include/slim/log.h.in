@@ -1,9 +1,36 @@
-#pragma once
+#ifndef __SLIM__COMMON__LOG__H
+#define __SLIM__COMMON__LOG__H
+#include <string>
+#include <string_view>
+#include <unistd.h>
+#include <slim/SlimValue.hpp>
 
-#define SLIMVALUE_VERSION "@SLIMVALUE_VERSION@"
-#define SLIMVALUE_GIT_HASH "@SLIMVALUE_GIT_HASH@"
-#define SLIMVALUE_VERSION_FULL "@SLIMVALUE_VERSION_FULL@"
+#define SLIMLOG_VERSION "@SLIMLIB_VERSION@"
+#define SLIMLOG_GIT_HASH "@SLIMLIB_GIT_HASH@"
+#define SLIMLOG_VERSION_FULL "@SLIMLIB_VERSION_FULL@"
 
-namespace slim::log {
-	void debug();
+namespace slim::common::log {
+	struct Message {
+		std::string_view consumer;
+		std::string_view file;
+		std::string_view function;
+		std::string_view label;
+		std::string_view log_level;
+		std::string_view separator;
+		std::string_view text;
+		const int line;
+		pid_t process_id;
+		Message() = delete;
+		Message(std::string_view _function, std::string_view _text, std::string_view _file,
+			const int _line, std::string_view _consumer = "console", std::string_view _separator = "|");
+	};
+
+	void error(Message message);
+	void debug(Message message);
+	void info(std::string_view _string);
+	void info(const slim::SlimValue& _value);
+	void info(std::string_view _string, const slim::SlimValue& _value);
+	void trace(Message message);
+	void print(const Message message);
 }
+#endif

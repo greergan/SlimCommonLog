@@ -19,7 +19,7 @@ set(SLIM_USE_LOCAL_SOURCE OFF CACHE BOOL "Use local library source instead of gi
 
 if(SLIM_USE_LOCAL_SOURCE)
     set(GIT_TAG 0.0.0)
-    set(SLIMVALUE_GIT_HASH "none")
+    set(SLIMLIB_GIT_HASH "none")
 else()
     execute_process(
         COMMAND git ls-remote --tags --sort=-v:refname https://github.com/greergan/${SLIM_LIB}.git
@@ -49,7 +49,7 @@ else()
 
     execute_process(
         COMMAND git rev-parse --short HEAD
-        OUTPUT_VARIABLE SLIMVALUE_GIT_HASH
+        OUTPUT_VARIABLE SLIMLIB_GIT_HASH
         OUTPUT_STRIP_TRAILING_WHITESPACE
         ERROR_QUIET
     )
@@ -77,8 +77,8 @@ else()
     set(SLIM_LIB_DESCRIPTION "${SLIM_LIB} C++ library")
 endif()
 
-set(SLIMVALUE_VERSION ${GIT_TAG})
-set(SLIMVALUE_VERSION_FULL "${SLIMVALUE_VERSION}+${SLIMVALUE_GIT_HASH}")
+set(SLIMLIB_VERSION ${GIT_TAG})
+set(SLIMLIB_VERSION_FULL "${SLIMLIB_VERSION}+${SLIMLIB_GIT_HASH}")
 
 execute_process(
 	COMMAND git config --get user.name
