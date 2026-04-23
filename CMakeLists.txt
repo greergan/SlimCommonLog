@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
+find_package(PkgConfig)
+pkg_check_modules(SLIMVALUE slimvalue)
 
 cmake_path(GET CMAKE_SOURCE_DIR FILENAME SLIM_LIB)
 string(TOLOWER "${SLIM_LIB}" SLIM_LIB_LOWER)
@@ -132,6 +134,16 @@ add_library(slim_static STATIC
 )
 set_target_properties(slim_static PROPERTIES OUTPUT_NAME ${SLIM_LIB_LOWER})
 
+if(SLIMVALUE_FOUND)
+    target_include_directories(slim_shared PRIVATE ${SLIMVALUE_INCLUDE_DIRS})
+    target_link_libraries(slim_shared PRIVATE ${SLIMVALUE_LIBRARIES})
+    target_include_directories(slim_static PRIVATE ${SLIMVALUE_INCLUDE_DIRS})
+    target_link_libraries(slim_static PRIVATE ${SLIMVALUE_LIBRARIES})
+    message(STATUS "SlimValue found via pkg-config")
+else()
+    message(FATAL_ERROR "SlimValue not found via pkg-config")
+endif()
+
 foreach(t slim_shared slim_static)
     target_include_directories(${t}
         PUBLIC
@@ -142,8 +154,8 @@ foreach(t slim_shared slim_static)
 
     target_compile_features(${t} PUBLIC cxx_std_23)
 endforeach()
-add_library(slim ALIAS slim_shared)
 
+add_library(slim ALIAS slim_shared)
 
 add_custom_command(TARGET slim_shared POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo "Shared lib: $<TARGET_FILE_NAME:slim_shared>"
