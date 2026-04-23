@@ -130,7 +130,7 @@ set_target_properties(slim_shared PROPERTIES
 add_library(slim_static STATIC
     ${slimlibrarysrc_SOURCE_DIR}/src/main.cpp
 )
-set_target_properties(slim_static  PROPERTIES OUTPUT_NAME ${SLIM_LIB_LOWER})
+set_target_properties(slim_static PROPERTIES OUTPUT_NAME ${SLIM_LIB_LOWER})
 
 foreach(t slim_shared slim_static)
     target_include_directories(${t}
@@ -142,17 +142,48 @@ foreach(t slim_shared slim_static)
 
     target_compile_features(${t} PUBLIC cxx_std_23)
 endforeach()
-
 add_library(slim ALIAS slim_shared)
+
+
+add_custom_command(TARGET slim_shared POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Shared lib: $<TARGET_FILE_NAME:slim_shared>"
+)
+
+add_custom_command(TARGET slim_static POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Static lib: $<TARGET_FILE_NAME:slim_static>"
+)
+
+if(NOT SHARED_OUT)
+    set(SHARED_OUT "${CMAKE_BINARY_DIR}/lib${SLIM_LIB_LOWER}.so.${GIT_TAG}")
+endif()
+
+if(NOT STATIC_OUT)
+    set(STATIC_OUT "${CMAKE_BINARY_DIR}/lib${SLIM_LIB_LOWER}.a")
+endif()
+
+if(EXISTS "${SHARED_OUT}")
+    message(STATUS "Shared lib: ${SHARED_OUT}")
+else()
+    message(STATUS "Shared lib missing: lib${SLIM_LIB_LOWER}.so.${GIT_TAG}")
+endif()
+
+if(EXISTS "${STATIC_OUT}")
+    message(STATUS "Static lib: ${STATIC_OUT}")
+else()
+    message(STATUS "Static lib missing: lib${SLIM_LIB_LOWER}.a")
+endif()
+
 
 set(SLIM_CXX_STANDARD 23)
 
 set(SLIM_BUILD_TESTS OFF CACHE BOOL "Build tests")
-
 if(EXISTS "${slimlibrarysrc_SOURCE_DIR}/tests")
-	set(SLIM_BUILD_TESTS ON CACHE BOOL "Build tests" FORCE)
+    set(SLIM_BUILD_TESTS ON CACHE BOOL "Build tests" FORCE)
+    message(STATUS "Testing: enabled")
 else()
-	set(SLIM_BUILD_TESTS OFF CACHE BOOL "Build tests" FORCE)
+    set(SLIM_BUILD_TESTS OFF CACHE BOOL "Build tests" FORCE)
+    message(STATUS "Testing: disabled")
+    message(STATUS "Testing: no tests directory found")
 endif()
 
 if(SLIM_BUILD_TESTS)
