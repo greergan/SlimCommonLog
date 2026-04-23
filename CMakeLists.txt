@@ -56,7 +56,7 @@ else()
 endif()
 
 project(${SLIM_LIB} VERSION ${GIT_TAG} LANGUAGES CXX)
-
+set(SLIM_CXX_STANDARD 23)
 set(LIB_PC_IN_FILE ${SLIM_LIB_LOWER}.pc.in)
 set(LIB_PC_FILE ${SLIM_LIB_LOWER}.pc)
 
@@ -185,17 +185,26 @@ else()
     message(STATUS "Static lib missing: lib${SLIM_LIB_LOWER}.a")
 endif()
 
+set(TEST_CPP "${CMAKE_CURRENT_SOURCE_DIR}/src/test.cpp")
 
-set(SLIM_CXX_STANDARD 23)
+if(EXISTS "${TEST_CPP}")
+    add_executable(slim_test "${TEST_CPP}")
+    target_link_libraries(slim_test PRIVATE slim_shared)
+    message(STATUS "Testing: with src/test.cpp")
+    add_custom_command(TARGET slim_test POST_BUILD
+        COMMAND slim_test
+        COMMENT "Running slim_test"
+    )
+endif()
 
 set(SLIM_BUILD_TESTS OFF)
 if(EXISTS "${slimlibrarysrc_SOURCE_DIR}/tests")
     set(SLIM_BUILD_TESTS ON)
-    message(STATUS "Testing: enabled")
+    message(STATUS "Cathc2 Testing: enabled")
 else()
     set(SLIM_BUILD_TESTS OFF)
-    message(STATUS "Testing: disabled")
-    message(STATUS "Testing: no tests directory found")
+    message(STATUS "Cathc2 Testing: disabled")
+    message(STATUS "Cathc2 Testing: no tests directory found")
 endif()
 
 if(SLIM_BUILD_TESTS)
