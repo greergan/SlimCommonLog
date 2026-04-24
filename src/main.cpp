@@ -5,7 +5,7 @@
 #include <mutex>
 #include <unordered_map>
 #include <string_view>
-#include <slim/log.h>
+#include <slim/common/log.h>
 
 namespace slim::common::log {
 	std::mutex cerr_mutex;
@@ -34,7 +34,7 @@ namespace slim::common::log {
 	};
 }
 
-void slim::common::log::debug(Message _message) {
+void slim::common::log::debug(Message& _message) {
 	_message.log_level = "debug";
 
 	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
@@ -43,7 +43,7 @@ void slim::common::log::debug(Message _message) {
 	}
 }
 
-void slim::common::log::error(Message _message) {
+void slim::common::log::error(Message& _message) {
 	_message.log_level = "error";
 	
 	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
@@ -57,7 +57,7 @@ void slim::common::log::info(std::string_view _value) {
 	std::cout << colors["INFO"] << _value << colors["END"] << std::endl;
 }
 
-void slim::common::log::trace(Message _message) {
+void slim::common::log::trace(Message& _message) {
 	_message.log_level = "trace";
 
 	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
@@ -66,7 +66,7 @@ void slim::common::log::trace(Message _message) {
 	}
 }
 
-void slim::common::log::print(const Message _message) {
+void slim::common::log::print(const Message& _message) {
 	std::lock_guard<std::mutex> lock((_message.log_level == "error") ? cerr_mutex : cout_mutex);
 	static std::ostream& print_stream = _message.log_level == "error" ? std::cerr : std::cout;
 

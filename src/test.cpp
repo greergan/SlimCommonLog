@@ -3,5 +3,4 @@
 
 int main() {
     using namespace slim;
-	log::debug();
 }

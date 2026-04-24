@@ -25,12 +25,12 @@ namespace slim::common::log {
 			const int _line, std::string_view _consumer = "console", std::string_view _separator = "|");
 	};
 
-	void error(Message message);
-	void debug(Message message);
+	void error(Message& message);
+	void debug(Message& message);
 	void info(std::string_view _string);
 	void info(const slim::SlimValue& _value);
 	void info(std::string_view _string, const slim::SlimValue& _value);
-	void trace(Message message);
-	void print(const Message message);
+	void trace(Message& message);
+	void print(const Message& message);
 }
 #endif
