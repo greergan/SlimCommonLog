@@ -32,21 +32,29 @@ namespace slim::common::log {
 		{"TEXT",    color_codes["white"]},
 		{"TRACE",   color_codes["cyan"]}
 	};
+
+	static std::function<bool(std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> can_log
+		= [](std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function) { return true; };
 }
 
-void slim::common::log::debug(Message& _message) {
+void slim::common::log::set_can_log(std::function<bool(
+		std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> _function) {
+	can_log = _function;
+}
+
+void slim::common::log::debug(Message _message) {
 	_message.log_level = "debug";
 
-	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
+	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
 		_message.label = "DEBUG";
 		print(_message);
 	}
 }
 
-void slim::common::log::error(Message& _message) {
+void slim::common::log::error(Message _message) {
 	_message.log_level = "error";
 	
-	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
+	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
 		_message.label = "ERROR";
 		print(_message);
 	}
@@ -57,10 +65,10 @@ void slim::common::log::info(std::string_view _value) {
 	std::cout << colors["INFO"] << _value << colors["END"] << std::endl;
 }
 
-void slim::common::log::trace(Message& _message) {
+void slim::common::log::trace(Message _message) {
 	_message.log_level = "trace";
 
-	if(slim::configuration_handler::can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
+	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
 		_message.label = "TRACE";
 		print(_message);
 	}

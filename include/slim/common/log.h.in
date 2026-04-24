@@ -1,5 +1,6 @@
 #ifndef __SLIM__COMMON__LOG__H
 #define __SLIM__COMMON__LOG__H
+#include <functional>
 #include <string>
 #include <string_view>
 #include <unistd.h>
@@ -25,12 +26,13 @@ namespace slim::common::log {
 			const int _line, std::string_view _consumer = "console", std::string_view _separator = "|");
 	};
 
-	void error(Message& message);
-	void debug(Message& message);
+	void set_can_log(std::function<bool(
+		std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> _function);
+
+	void error(Message message);
+	void debug(Message message);
 	void info(std::string_view _string);
-	void info(const slim::SlimValue& _value);
-	void info(std::string_view _string, const slim::SlimValue& _value);
-	void trace(Message& message);
+	void trace(Message message);
 	void print(const Message& message);
 }
 #endif
