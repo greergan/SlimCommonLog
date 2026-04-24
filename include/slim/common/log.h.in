@@ -4,7 +4,6 @@
 #include <string>
 #include <string_view>
 #include <unistd.h>
-#include <slim/SlimValue.hpp>
 
 #define SLIMLOG_VERSION "@SLIMLIB_VERSION@"
 #define SLIMLOG_GIT_HASH "@SLIMLIB_GIT_HASH@"

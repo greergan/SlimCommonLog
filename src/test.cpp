@@ -1,5 +1,4 @@
 #include "slim/common/log.h"
-#include <slim/SlimValue.hpp>
 
 bool test_can_print(std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function) {
     if(_log_level == "trace") {
