@@ -159,16 +159,6 @@ add_library(slim_static STATIC
 )
 set_target_properties(slim_static PROPERTIES OUTPUT_NAME ${SLIM_LIB_LOWER})
 
-if(SLIMVALUE_FOUND)
-    target_include_directories(slim_shared PRIVATE ${SLIMVALUE_INCLUDE_DIRS})
-    target_link_libraries(slim_shared PRIVATE ${SLIMVALUE_LIBRARIES})
-    target_include_directories(slim_static PRIVATE ${SLIMVALUE_INCLUDE_DIRS})
-    target_link_libraries(slim_static PRIVATE ${SLIMVALUE_LIBRARIES})
-    message(STATUS "SlimValue found via pkg-config")
-else()
-    message(FATAL_ERROR "SlimValue not found via pkg-config")
-endif()
-
 foreach(t slim_shared slim_static)
     target_include_directories(${t}
         PUBLIC
