@@ -33,7 +33,7 @@ namespace slim::common::log {
 		{"TRACE",   color_codes["cyan"]}
 	};
 
-	static std::function<bool(std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> can_log
+	std::function<bool(std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> can_log
 		= [](std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function) { return true; };
 }
 
