@@ -12,6 +12,7 @@ CTestTestfile.cmake
 _deps/
 CMakeUserPresets.json
 build*/
+dist
 cmake
 
 # IDE
@@ -37,4 +38,4 @@ cmake-build-*/
 CMakeLists.txt
 Makefile
 cmake/
-slim_common_lib.pc.in
+
