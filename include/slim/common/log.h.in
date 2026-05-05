@@ -5,9 +5,10 @@
 #include <string_view>
 #include <unistd.h>
 
-#define SLIMLOG_VERSION "@SLIMLIB_VERSION@"
-#define SLIMLOG_GIT_HASH "@SLIMLIB_GIT_HASH@"
-#define SLIMLOG_VERSION_FULL "@SLIMLIB_VERSION_FULL@"
+SLIMCOMMONLOG_VERSION
+
+#define SLIMCOMMONLOG_VERSION "@SLIMCOMMONLOG_VERSION@"
+#define SLIMCOMMONLOG_GIT_HASH "@SLIMCOMMONLOG_GIT_HASH@"
 
 namespace slim::common::log {
 	struct Message {
