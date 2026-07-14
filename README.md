@@ -61,12 +61,12 @@ Each field is colored independently:
 
 <table>
 <tr><th>Element</th><th>Color</th></tr>
-<tr><td><code>TRACE</code></td><td>${\color{cyan}Cyan}$</td></tr>
-<tr><td><code>DEBUG</code></td><td>${\color{yellow}Yellow}$</td></tr>
-<tr><td><code>ERROR</code></td><td>${\color{red}Red}$</td></tr>
-<tr><td>File / Line</td><td>${\color{magenta}Magenta}$</td></tr>
-<tr><td>Function</td><td>${\color{green}Green}$</td></tr>
-<tr><td>Text / INFO</td><td>${\color{white}White}$</td></tr>
+<tr><td><code>TRACE</code></td><td style="color:#00cdcd;font-weight:bold">Cyan</td></tr>
+<tr><td><code>DEBUG</code></td><td style="color:#cdcd00;font-weight:bold">Yellow</td></tr>
+<tr><td><code>ERROR</code></td><td style="color:#cd0000;font-weight:bold">Red</td></tr>
+<tr><td>File / Line</td><td style="color:#cd00cd;font-weight:bold">Magenta</td></tr>
+<tr><td>Function</td><td style="color:#00cd00;font-weight:bold">Green</td></tr>
+<tr><td>Text / INFO</td><td style="color:#e5e5e5;font-weight:bold">White</td></tr>
 </table>
 
 [↑ Top](#table-of-contents)
