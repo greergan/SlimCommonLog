@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <string_view>
 #include <slim/common/log.h>
-
 namespace slim::common::log {
 	std::mutex cerr_mutex;
 	std::mutex cout_mutex;
@@ -19,7 +18,6 @@ namespace slim::common::log {
 		{"white",   "\033[0;37m"},
 		{"yellow",  "\033[0;33m"}
 	};
-
 	std::unordered_map<std::string_view, std::string_view> colors {
 		{"END",     "\033[0m"},
 		{"DEBUG",   color_codes["yellow"]},
@@ -31,66 +29,58 @@ namespace slim::common::log {
 		{"TEXT",    color_codes["white"]},
 		{"TRACE",   color_codes["cyan"]}
 	};
-
-	std::function<bool(std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> can_log
-		= [](std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function) { return true; };
+	std::function<bool(std::string_view, std::string_view, std::string_view, std::string_view)> can_log =
+	[]([[maybe_unused]] std::string_view consumer,
+        [[maybe_unused]] std::string_view log_level,
+        [[maybe_unused]] std::string_view file,
+        [[maybe_unused]] std::string_view function) {
+		return true;
+    };
 }
-
 void slim::common::log::set_can_log(std::function<bool(
-		std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> _function) {
-	can_log = _function;
+		std::string_view consumer, std::string_view log_level, std::string_view file, std::string_view function)> function) {
+	can_log = function;
 }
-
-void slim::common::log::debug(Message _message) {
-	_message.log_level = "debug";
-
-	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
-		_message.label = "DEBUG";
-		print(_message);
+void slim::common::log::debug(Message message) {
+	message.log_level = "debug";
+	if(can_log(message.consumer, message.log_level, message.file, message.function)) {
+		message.label = "DEBUG";
+		print(message);
 	}
 }
-
-void slim::common::log::error(Message _message) {
-	_message.log_level = "error";
-	
-	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
-		_message.label = "ERROR";
-		print(_message);
+void slim::common::log::error(Message message) {
+	message.log_level = "error";
+	if(can_log(message.consumer, message.log_level, message.file, message.function)) {
+		message.label = "ERROR";
+		print(message);
 	}
 }
-
-void slim::common::log::info(std::string_view _value) {
+void slim::common::log::info(std::string_view value) {
 	std::lock_guard<std::mutex> lock(cout_mutex);
-	std::cout << colors["INFO"] << _value << colors["END"] << std::endl;
+	std::cout << colors["INFO"] << value << colors["END"] << std::endl;
 }
-
-void slim::common::log::trace(Message _message) {
-	_message.log_level = "trace";
-
-	if(can_log(_message.consumer, _message.log_level, _message.file, _message.function)) {
-		_message.label = "TRACE";
-		print(_message);
+void slim::common::log::trace(Message message) {
+	message.log_level = "trace";
+	if(can_log(message.consumer, message.log_level, message.file, message.function)) {
+		message.label = "TRACE";
+		print(message);
 	}
 }
-
-void slim::common::log::print(const Message& _message) {
-	std::lock_guard<std::mutex> lock((_message.log_level == "error") ? cerr_mutex : cout_mutex);
-	static std::ostream& print_stream = _message.log_level == "error" ? std::cerr : std::cout;
-
-	print_stream << colors[_message.label] << _message.label << "=>" << colors["END"];
-	print_stream << std::setw(16) << colors["LINE"] << std::to_string(_message.line) << colors["END"];
-	print_stream << _message.separator;
-	print_stream << colors["FILE"] << _message.file << colors["END"];
-	print_stream << _message.separator;
-	print_stream << colors["FUNCTION"] << _message.function << colors["END"];
-	print_stream << _message.separator;
-	print_stream << colors["TEXT"] << _message.text << colors["END"];
+void slim::common::log::print(const Message& message) {
+	std::lock_guard<std::mutex> lock((message.log_level == "error") ? cerr_mutex : cout_mutex);
+	static std::ostream& print_stream = message.log_level == "error" ? std::cerr : std::cout;
+	print_stream << colors[message.label] << message.label << "=>" << colors["END"];
+	print_stream << std::setw(16) << colors["LINE"] << std::to_string(message.line) << colors["END"];
+	print_stream << message.separator;
+	print_stream << colors["FILE"] << message.file << colors["END"];
+	print_stream << message.separator;
+	print_stream << colors["FUNCTION"] << message.function << colors["END"];
+	print_stream << message.separator;
+	print_stream << colors["TEXT"] << message.text << colors["END"];
 	print_stream << std::endl;
 }
-
-slim::common::log::Message::Message(std::string_view _function, std::string_view _text, std::string_view _file,
-	const int _line, std::string_view _consumer, std::string_view _separator)
-		: consumer(_consumer), function(_function), file(_file), text(_text), line(_line), separator(_separator) {
-
+slim::common::log::Message::Message(std::string_view function, std::string_view text, std::string_view file,
+	const int line, std::string_view consumer, std::string_view separator)
+		: consumer(consumer), function(function), file(file), text(text), line(line), separator(separator) {
 	process_id = getpid();
 }

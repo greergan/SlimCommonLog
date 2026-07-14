@@ -1,35 +1,31 @@
-#ifndef __SLIM__COMMON__LOG__H
-#define __SLIM__COMMON__LOG__H
+#ifndef SLIM_COMMON_LOG_H
+#define SLIM_COMMON_LOG_H
 #include <functional>
 #include <string>
 #include <string_view>
 #include <unistd.h>
-
 #define SLIMCOMMONLOG_VERSION "@SLIMCOMMONLOG_VERSION@"
 #define SLIMCOMMONLOG_GIT_HASH "@SLIMCOMMONLOG_GIT_HASH@"
-
 namespace slim::common::log {
 	struct Message {
+	    Message() = delete;
+	    Message(std::string_view function, std::string_view text, std::string_view file,
+		const int line, std::string_view consumer = "console", std::string_view _separator = "|");
 		std::string_view consumer;
-		std::string_view file;
 		std::string_view function;
-		std::string_view label;
-		std::string_view log_level;
-		std::string_view separator;
+		std::string_view file;
 		std::string_view text;
 		const int line;
+		std::string_view separator;
+		std::string_view label;
+		std::string_view log_level;
 		pid_t process_id;
-		Message() = delete;
-		Message(std::string_view _function, std::string_view _text, std::string_view _file,
-			const int _line, std::string_view _consumer = "console", std::string_view _separator = "|");
 	};
-
-	void set_can_log(std::function<bool(
-		std::string_view _consumer, std::string_view _log_level, std::string_view _file, std::string_view _function)> _function);
-
+	void set_can_log(std::function<bool(std::string_view consumer, std::string_view log_level,
+	    std::string_view file, std::string_view function)> function);
 	void error(Message message);
 	void debug(Message message);
-	void info(std::string_view _string);
+	void info(std::string_view string);
 	void trace(Message message);
 	void print(const Message& message);
 }
