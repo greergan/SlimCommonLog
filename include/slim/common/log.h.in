@@ -10,16 +10,16 @@ namespace slim::common::log {
 	struct Message {
 	    Message() = delete;
 	    Message(std::string_view function, std::string_view text, std::string_view file,
-		const int line, std::string_view consumer = "console", std::string_view _separator = "|");
-		std::string_view consumer;
-		std::string_view function;
-		std::string_view file;
-		std::string_view text;
-		const int line;
-		std::string_view separator;
-		std::string_view label;
-		std::string_view log_level;
-		pid_t process_id;
+		const int line, std::string_view consumer = "console", std::string_view separator = "|");
+		std::string_view consumer_;
+		std::string_view function_;
+		std::string_view file_;
+		std::string_view text_;
+		const int line_;
+		std::string_view separator_;
+		std::string_view label_;
+		std::string_view log_level_;
+		pid_t process_id_;
 	};
 	void set_can_log(std::function<bool(std::string_view consumer, std::string_view log_level,
 	    std::string_view file, std::string_view function)> function);
