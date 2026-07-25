@@ -68,7 +68,7 @@ void slim::common::log::trace(Message message) {
 }
 void slim::common::log::print(const Message& message) {
 	std::lock_guard<std::mutex> lock((message.log_level_ == "error") ? cerr_mutex : cout_mutex);
-	static std::ostream& print_stream = message.log_level_ == "error" ? std::cerr : std::cout;
+	static std::ostream& print_stream = message.log_level_ == "error" ? std::cerr : std::cerr;
 	print_stream << colors[message.label_] << message.label_ << "=>" << colors["END"];
 	print_stream << std::setw(16) << colors["LINE"] << std::to_string(message.line_) << colors["END"];
 	print_stream << message.separator_;
